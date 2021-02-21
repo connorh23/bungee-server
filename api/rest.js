@@ -1,4 +1,4 @@
-const { telemetry } = require('bungee-lib');
+const { telemetry } = require('bungee-lib/util');
 const { ModelManager }  = require('../models');
 const { query_utils } = require('../util');
 
@@ -18,8 +18,6 @@ const query = async event => {
       });
    });
 };
-
-
 
 const retrieve = async event => {
    const { id, model } = event.pathParameters;
