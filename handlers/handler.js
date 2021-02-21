@@ -1,6 +1,9 @@
 'use strict';
 
-const model_manager = require('../models/model_manager');
+const {
+   AppModels,
+   ModelManager
+} = require('../models');
 const { responses } = require('bungee-lib/http');
 
 const {
@@ -15,7 +18,7 @@ const {
 module.exports.meta_data = async request => {
 
    const meta = {
-      models: Object.keys(model_manager.models)
+      models: Object.keys(AppModels)
    };
 
    return responses.success({
@@ -29,7 +32,7 @@ module.exports.meta_data = async request => {
 
 module.exports.rest = async request => {
 
-   await model_manager.init();
+   await ModelManager.init();
 
    let response;
 
@@ -54,13 +57,13 @@ module.exports.rest = async request => {
         });
    }
 
-   await model_manager.teardown();
+   await ModelManager.teardown();
 
    return responses.success({
       statusCode: response.data? 200 : 500,
       body: {
          ...response,
-         event: request,
+         // event: request,
       }
    });
 
