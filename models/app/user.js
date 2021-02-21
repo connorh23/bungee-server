@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const { BungeeModel } = require('./bungee_model');
+const { BungeeModel } = require('../core/bungee_model');
 
 class User extends BungeeModel {
 

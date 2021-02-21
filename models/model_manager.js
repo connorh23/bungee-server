@@ -2,7 +2,9 @@ let Sequelize = require('sequelize');
 
 const environment = require('../environment');
 
-const { User } = require('./user');
+const {
+  User
+} = require('./app');
 
 module.exports = class ModelManager {
 
