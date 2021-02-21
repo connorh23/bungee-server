@@ -1,0 +1,11 @@
+
+.idea
+.serverless
+
+build
+node_modules
+
+.env*
+
+scratch.js
+test.js
