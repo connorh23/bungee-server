@@ -1,0 +1,225 @@
+service: bungee-server
+
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+  - serverless-dotenv-plugin
+
+custom:
+  stage: "${STAGE}"
+#  customDomain:
+#    domainName: ${ env:APPLICATION_URI }
+#    stage: ${self:provider.stage}
+#    createRoute53Record: true
+#    certificateArn: ${ env:CERTIFICATE_ARN }
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${env:REGION}
+  versionFunctions: false
+
+  # ----- Managed policies to provide AWS service access
+  iam:
+    role:
+      managedPolicies:
+        - 'arn:aws:iam::aws:policy/AmazonSQSFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSNSFullAccess'
+
+
+functions:
+  # ----- REST Endpoints
+
+  meta:
+    handler: handlers/handler.meta_data
+    timeout: 2
+    memorySize: 128
+    events:
+      - http:
+          path: /rest/meta
+          method: get
+
+  rest:
+    handler: handlers/handler.rest
+    timeout: 6
+    memorySize: 128
+    events:
+      - http:
+          path: /rest/{model}
+          method: get
+          request:
+            parameters:
+              paths:
+                model: true
+      - http:
+          path: /rest/{model}
+          method: post
+          request:
+            parameters:
+              paths:
+                model: true
+      - http:
+          path: /rest/{model}/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                model: true
+                id: true
+      - http:
+          path: /rest/{model}
+          method: put
+          request:
+            parameters:
+              paths:
+                model: true
+      - http:
+          path: /rest/{model}/{id}
+          method: delete
+          request:
+            parameters:
+              paths:
+                model: true
+                id: true
+
+
+resources:
+  Resources:
+    # ======================================================================================================================
+    # VPC Resources
+    # ======================================================================================================================
+
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: !Sub "10.87.0.0/16"
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+#        Tags:
+#          - Key: foo
+#            Value: bar
+#          - Key: foo2,
+#            Value: bar2
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+    InternetGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        InternetGatewayId: !Ref InternetGateway
+        VpcId: !Ref VPC
+    PublicSubnetA:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        CidrBlock: !Sub "10.87.10.0/24"
+        MapPublicIpOnLaunch: true
+    PublicSubnetB:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: !Ref VPC
+        AvailabilityZone: !Select [ 1, !GetAZs '' ]
+        CidrBlock: !Sub "10.87.11.0/24"
+        MapPublicIpOnLaunch: true
+    PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref VPC
+    DefaultPublicRoute:
+      Type: AWS::EC2::Route
+      DependsOn: InternetGatewayAttachment
+      Properties:
+        RouteTableId: !Ref PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref InternetGateway
+    PublicSubnetRouteTableAssociationA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref PublicRouteTable
+        SubnetId: !Ref PublicSubnetA
+    PublicSubnetRouteTableAssociationB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref PublicRouteTable
+        SubnetId: !Ref PublicSubnetB
+
+    # ======================================================================================================================
+    # Security Resources
+    # ======================================================================================================================
+
+    DBVpcSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Enable TCP access via port 3306
+        GroupName: rds-test-stack-sg
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '3306'
+            ToPort: '3306'
+            CidrIp: 0.0.0.0/0
+        VpcId: !Ref VPC
+
+    # ======================================================================================================================
+    # DB Resources
+    # ======================================================================================================================
+
+    DBParameterGroup:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: Bungee DB parameter group
+        Family: mysql8.0
+#        Parameters:
+#          innodb_sort_buffer_size: 5242880
+#          sort_buffer_size: 1310720
+    DBInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AllocatedStorage: 10
+        DBInstanceClass: 'db.m5.xlarge'
+        DBInstanceIdentifier: 'beer-goggles-db-instance'
+        DBName: 'bungee_db'
+        DBParameterGroupName: !Ref DBParameterGroup
+        VPCSecurityGroups:
+          - !Ref DBVpcSecurityGroup
+        DBSubnetGroupName: !Ref DBSubnetGroup
+        Engine: MySQL
+        EngineVersion: 8.0.21
+        AllowMajorVersionUpgrade: true
+        MasterUsername: admin
+        MasterUserPassword: serverless_admin
+        PubliclyAccessible: true
+    DBSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: String
+        DBSubnetGroupName: 'bungee-server-subnet-group'
+        SubnetIds:
+          - !Ref PublicSubnetA
+          - !Ref PublicSubnetB
+
+    # ======================================================================================================================
+    # SNS
+    # ======================================================================================================================
+
+    ImageDeduplicationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        ContentBasedDeduplication: True
+        FifoQueue: True
+        QueueName: image-deduplication-queue.fifo
+
+    ImageDeduplicationQueueDeadLetter:
+      Type: AWS::SQS::Queue
+      Properties:
+        ContentBasedDeduplication: True
+        FifoQueue: True
+        QueueName: image-deduplication-queue-dead-letter.fifo
+
+    CategoryHealthCalculationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        ContentBasedDeduplication: True
+        FifoQueue: True
+        QueueName: category-health-calculation-queue.fifo
