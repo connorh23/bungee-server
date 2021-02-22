@@ -1,12 +1,12 @@
-service: !Join ['-',['bungee',${env:APP_NAME},'server']]
+service: bungee-server
 
 plugins:
   - serverless-offline
-  - serverless-domain-manager
+#  - serverless-domain-manager
   - serverless-dotenv-plugin
 
 custom:
-  stage: "${STAGE}"
+  stage: ${env:STAGE}
 #  customDomain:
 #    domainName: ${ env:APPLICATION_URI }
 #    stage: ${self:provider.stage}
@@ -84,8 +84,6 @@ functions:
                 model: true
                 id: true
 
-
 resources:
-  Resources:
-    ${include(./clourformation/vpc.yml)}
-    ${include(./cloudformation/db.yml)}
+  - ${ file(./cloudformation/vpc.yml) }
+  - ${ file(./cloudformation/db.yml) }
