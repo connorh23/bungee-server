@@ -22,6 +22,7 @@
     "build:clean": "rm -r node_modules; rm -r package-lock.json; npm i",
     "deploy:local": "serverless offline",
     "deploy:stage": "./scripts/staging/deploy.sh",
+    "db:sync": "node scripts/db/sync_schema.js",
     "test": "jest --passWithNoTests"
   },
   "author": "connor.hood234@gmail.com",
