@@ -1,4 +1,3 @@
-
 const Sequelize = require('sequelize');
 const { BungeeModel } = require('../core/bungee_model');
 
@@ -22,12 +21,20 @@ class User extends BungeeModel {
     },
   };
 
-  static init = (sequelize) => {
-    super.init(sequelize, this.MODEL_NAME, this.spec);
+  static hooks = {
+
   };
 
-};
+  static init = (sequelize) => {
+    super.init({
+      sequelize, modelName:
+      this.MODEL_NAME,
+      spec: this.spec,
+      hooks: this.hooks
+    });
+  };
+}
 
 module.exports = {
   User
-}
+};
