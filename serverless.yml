@@ -4,9 +4,14 @@ plugins:
   - serverless-offline
 #  - serverless-domain-manager
   - serverless-dotenv-plugin
+  - serverless-prune-plugin
 
 custom:
   stage: ${env:STAGE}
+  prune:
+    automatic: true
+    number: 2
+
 #  customDomain:
 #    domainName: ${ env:APPLICATION_URI }
 #    stage: ${self:provider.stage}
