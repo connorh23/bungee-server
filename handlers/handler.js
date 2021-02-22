@@ -14,6 +14,7 @@ const {
    destroy
 } = require('../api/rest');
 
+const { telemetry } = require('bungee-lib/util');
 
 module.exports.meta_data = async request => {
 
@@ -34,28 +35,30 @@ module.exports.rest = async request => {
 
    await ModelManager.init();
 
-   let response;
+   let rest_method;
 
    switch (request.httpMethod) {
       case "GET":
-         response = (request.pathParameters.id) ?
-            await retrieve(request) :
-            await query(request);
+         rest_method = (request.pathParameters.id) ? retrieve : query;
          break;
       case "POST":
-         response = await create(request);
+         rest_method = create;
          break;
       case "PUT":
-         response = await update(request);
+         rest_method = update;
          break;
       case "DELETE":
-         response = await destroy(request);
+         rest_method = destroy;
          break;
       default:
-        response = responses.error({
-           errors: [`Unsupported http method: ${request.httpMethod}`]
-        });
+        rest_method = () => {
+           throw `Unsupported http method: ${request.httpMethod}`
+        };
    }
+
+   const response = await telemetry.execute(async () => {
+      return rest_method(request);
+   });
 
    await ModelManager.teardown();
 
@@ -63,7 +66,6 @@ module.exports.rest = async request => {
       statusCode: response.data? 200 : 500,
       body: {
          ...response,
-         // event: request,
       }
    });
 
