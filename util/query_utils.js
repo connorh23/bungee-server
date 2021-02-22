@@ -5,7 +5,7 @@ const get_order_params = ({ event }) => {
    let {
       order_by,
       order_direction
-   } = event.queryStringParameters;
+   } = event.queryStringParameters || {};
 
    order_by = order_by ? order_by : 'id';
    order_direction = order_direction ? order_direction : 'asc';
@@ -18,7 +18,7 @@ const get_pagination_params = ({ event }) => {
    const {
       page,
       page_size
-   } = event.queryStringParameters;
+   } = event.queryStringParameters || {};
 
    if (page && parseInt(page) && page_size && parseInt(page_size)) {
       return {
@@ -29,6 +29,8 @@ const get_pagination_params = ({ event }) => {
 };
 
 const get_model_query_params = ({ model, event }) => {
+
+   if (!event.queryStringParameters) return {};
 
    const model_keys = Object.keys(model_manager.get_model(model).spec);
    const model_query = {};
