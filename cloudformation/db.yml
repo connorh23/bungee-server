@@ -1,0 +1,64 @@
+DBParameterGroup:
+  Type: AWS::RDS::DBParameterGroup
+  Properties:
+    Description: Bungee DB parameter group
+    Family: mysql8.0
+    Tags:
+      - Key: bungee-app
+        Value: !Join ['-',['bungee', ${env:APP_NAME}]]
+      - Key: bungee-name
+        Value: !Join ['-',['bungee', ${env:APP_NAME},'db-parameter-group']]
+
+DBInstance:
+  Type: AWS::RDS::DBInstance
+  Properties:
+    AllocatedStorage: 10
+    DBInstanceClass: ${env:BUNGEE_RDS_INSTANCE_TYPE}
+    DBInstanceIdentifier: !Join ['-',['bungee', ${env:APP_NAME},'rds-instance']]
+    DBName: !Join ['-',['bungee', ${env:APP_NAME},'db']]
+    DBParameterGroupName: !Ref DBParameterGroup
+    VPCSecurityGroups:
+      - !Ref DBVpcSecurityGroup
+    DBSubnetGroupName: !Ref DBSubnetGroup
+    Engine: MySQL
+    EngineVersion: 8.0.21
+    AllowMajorVersionUpgrade: true
+    MasterUsername: ${env:DB_USER}
+    MasterUserPassword: ${env:DB_PASSWORD}
+    PubliclyAccessible: true
+    Tags:
+      - Key: bungee-app
+        Value: !Join ['-',['bungee', ${env:APP_NAME}]]
+      - Key: bungee-name
+        Value: !Join ['-',['bungee', ${env:APP_NAME},'db-instance']]
+
+DBSubnetGroup:
+  Type: AWS::RDS::DBSubnetGroup
+  Properties:
+    DBSubnetGroupDescription: String
+    DBSubnetGroupName: !Join ['-',['bungee', ${env:APP_NAME},'subnet-group']]
+    SubnetIds:
+      - !Ref PublicSubnetA
+      - !Ref PublicSubnetB
+    Tags:
+      - Key: bungee-app
+        Value: !Join ['-',['bungee', ${env:APP_NAME}]]
+      - Key: bungee-name
+        Value: !Join ['-',['bungee', ${env:APP_NAME},'db-subnet-group']]
+
+DBVpcSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: Enable TCP access via port 3306
+    GroupName: bungee-rds-sg
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '3306'
+        ToPort: '3306'
+        CidrIp: 0.0.0.0/0
+    VpcId: !Ref VPC
+    Tags:
+      - Key: bungee-app
+        Value: !Join ['-',['bungee', ${env:APP_NAME}]]
+      - Key: bungee-name
+        Value: !Join ['-',['bungee', ${env:APP_NAME},'db-vpc-security-group']]
