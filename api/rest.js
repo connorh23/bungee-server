@@ -5,7 +5,6 @@ const { query_utils } = require('../util');
 const query = async event => {
 
    const { model } = event.pathParameters;
-
    const query_params = query_utils.get_model_query_params({ model, event });
    const pagination_params = query_utils.get_pagination_params({ event });
    const order_params = query_utils.get_order_params({ event });
