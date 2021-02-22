@@ -35,6 +35,4 @@ class User extends BungeeModel {
   };
 }
 
-module.exports = {
-  User
-};
+module.exports = User;
