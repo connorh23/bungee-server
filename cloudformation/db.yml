@@ -16,7 +16,7 @@ Resources:
       AllocatedStorage: 10
       DBInstanceClass: ${env:BUNGEE_RDS_INSTANCE_TYPE}
       DBInstanceIdentifier: !Join ['-',['bungee', '${env:APP_NAME}','rds-instance']]
-      DBName: !Join ['-',['bungee', '${env:APP_NAME}','db']]
+      DBName: ${ env:DEFAULT_DB }
       DBParameterGroupName: !Ref DBParameterGroup
       VPCSecurityGroups:
         - !Ref DBVpcSecurityGroup
