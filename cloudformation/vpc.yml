@@ -2,7 +2,7 @@ Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Sub "10.87.0.0/16"
+      CidrBlock: !Sub "10.70.0.0/16"
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
@@ -68,29 +68,15 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
-      Tags:
-        - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
-        - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','default-public-route']]
 
   PublicSubnetRouteTableAssociationA:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnetA
-      Tags:
-        - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
-        - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','public-subnet-route-table-association-a']]
   PublicSubnetRouteTableAssociationB:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnetB
-      Tags:
-        - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
-        - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','public-subnet-route-table-association-b']]
+
