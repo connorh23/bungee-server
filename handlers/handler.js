@@ -4,7 +4,6 @@ const {
    AppModels,
    ModelManager
 } = require('../models');
-const { responses } = require('bungee-lib/http');
 
 const {
    query,
@@ -14,7 +13,11 @@ const {
    destroy
 } = require('../api/rest');
 
-const { telemetry } = require('bungee-lib/util');
+const {
+   http: { responses },
+   util: { async_executor }
+} = require('bungee-lib');
+
 module.exports.hello = async request => {
 
    return responses.success({
@@ -67,17 +70,25 @@ module.exports.rest = async request => {
         };
    }
 
-   const response = await telemetry.execute(async () => {
-      return rest_method(request);
+   console.log(request);
+
+   const response = await async_executor.execute({
+      method: async () => { return rest_method(request) },
+      max_attempts: 1
    });
+
+   console.log(response);
 
    await ModelManager.teardown();
 
-   return responses.success({
+   const s = responses.success({
       statusCode: response.data? 200 : 500,
       body: {
          ...response,
       }
    });
+
+   console.log(s);
+   return s;
 
 };
