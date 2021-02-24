@@ -1,17 +1,23 @@
 # BungeeServer
 The BungeeServer is a stack template which uses Serverless, Sequelize/MySQL, AWS Lambda, and a custom REST API to create a seamless, out-of-the-box data server.
 ### ENV
-The following variables should be outlined in your ```.env``` file.  Generating a ```bungee-server``` project with the ```bungee-cli``` will set many of these values for you.
+The following variables should be outlined in your ```.env``` file.  Please note that environment keys with the prefix
+```BUNGEE_``` are necessary for the application to function properly.
 ```
-AWS_REGION=
-BUNGEE_APP_NAME=
-BUNGEE_DEFAULT_DB=
-BUNGEE_DB_HOST=
-BUNGEE_DB_USER=
-BUNGEE_DB_PASSWORD=
-BUNGEE_RDS_INSTANCE_TYPE=
-BUNGEE_STAGE=
+BUNGEE_AWS_REGION           /* AWS region for the application (i.e. 'us-west-2')    */
+BUNGEE_APP_NAME             /* The name you're giving to your app!                  */
+BUNGEE_DEFAULT_DB           /* Default database name in the MySQL RDS Instance      */
+BUNGEE_DB_HOST              /* URL to your RDS instance                             */
+BUNGEE_DB_USER              /* The username for your RDS Insance                    */
+BUNGEE_DB_PASSWORD          /* The password for your RDS Instance                   */
+BUNGEE_RDS_INSTANCE_TYPE    /* The EC2 Insance Type for your RDS Instancel
+BUNGEE_STAGE
 ```
+- All of these variables except ```BUNGEE_DB_HOST``` will be set automatically by the ```bungee-cli``` if you use it to create an application.
+- ```BUNGEE_DB_HOST``` can be retrieved from the [RDS Console](https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2) once you have deployed the application
+for the first time.
+- A list of acceptable values for ```BUNGEE_RDS_INSTANCE_TYPE``` is available [here](https://aws.amazon.com/rds/instance-types/).
+
 ### Build Project
 ```bash
 npm run build          # Standard build
@@ -26,35 +32,7 @@ npm run deploy:local
 ```bash
 npm run deploy:stage
 ```
----
 
-## bungee-client
-- API wrapper for bungee-server api(s)
-- Uses ```bungee-lib```
-
----
-
-## bungee-ui
-- Browse & manage data
-- Uses ```bungee-server``` via ```bungee-client```
-### Local Development
-```
-npm run deploy:local
-```
-
----
-# TODO List
-
-### bungee-lib
-
-    
-### bungee-client
-- Query support
-1- Unit tests
-
-## bungee-serverless
-- DB optimization
-- Jest unit tests
 
 
 
