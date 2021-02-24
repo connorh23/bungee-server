@@ -15,6 +15,17 @@ const {
 } = require('../api/rest');
 
 const { telemetry } = require('bungee-lib/util');
+module.exports.hello = async request => {
+
+   return responses.success({
+      statusCode: 200,
+      body: {
+         message: 'hello bungee!',
+         request
+      }
+   });
+
+};
 
 module.exports.meta_data = async request => {
 

@@ -37,6 +37,15 @@ provider:
 functions:
   # ----- REST Endpoints
 
+  hello:
+    handler: handlers/handler.hello
+    timeout: 1
+    memorySize: 128
+    events:
+      - http:
+          path: /hello
+          method: get
+
   meta:
     handler: handlers/handler.meta_data
     timeout: 2
