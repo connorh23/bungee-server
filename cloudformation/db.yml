@@ -6,16 +6,16 @@ Resources:
       Family: mysql8.0
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','db-parameter-group']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','db-parameter-group']]
 
   DBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
       AllocatedStorage: 10
       DBInstanceClass: ${env:BUNGEE_RDS_INSTANCE_TYPE}
-      DBInstanceIdentifier: !Join ['-',['bungee', '${env:APP_NAME}','rds-instance']]
+      DBInstanceIdentifier: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','rds-instance']]
       DBName: ${ env:DEFAULT_DB }
       DBParameterGroupName: !Ref DBParameterGroup
       VPCSecurityGroups:
@@ -29,23 +29,23 @@ Resources:
       PubliclyAccessible: true
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','db-instance']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','db-instance']]
 
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: String
-      DBSubnetGroupName: !Join ['-',['bungee', '${env:APP_NAME}','subnet-group']]
+      DBSubnetGroupName: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','subnet-group']]
       SubnetIds:
         - !Ref PublicSubnetA
         - !Ref PublicSubnetB
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','db-subnet-group']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','db-subnet-group']]
 
   DBVpcSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -60,6 +60,6 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','db-vpc-security-group']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','db-vpc-security-group']]

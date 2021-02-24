@@ -7,18 +7,18 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','vpc']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','vpc']]
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','internet-gateway']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','internet-gateway']]
 
   InternetGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -35,9 +35,9 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','public-subnet-a']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','public-subnet-a']]
   PublicSubnetB:
     Type: AWS::EC2::Subnet
     Properties:
@@ -47,9 +47,9 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','public-subnet-b']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','public-subnet-b']]
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
@@ -57,9 +57,9 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: bungee-app
-          Value: !Join ['-',['bungee', '${env:APP_NAME}']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}']]
         - Key: bungee-name
-          Value: !Join ['-',['bungee', '${env:APP_NAME}','public-route-table']]
+          Value: !Join ['-',['bungee', '${env:BUNGEE_APP_NAME}','public-route-table']]
 
   DefaultPublicRoute:
     Type: AWS::EC2::Route

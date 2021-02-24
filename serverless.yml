@@ -7,7 +7,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  stage: ${env:STAGE}
+  stage: ${env:BUNGEE_STAGE}
   prune:
     automatic: true
     number: 2
@@ -21,7 +21,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  region: ${ env:REGION }
+  region: ${ env:BUNGEE_REGION }
   versionFunctions: false
 
   # ----- Managed policies to provide AWS service access
