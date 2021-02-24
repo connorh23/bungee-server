@@ -14,14 +14,14 @@ custom:
 
 #  customDomain:
 #    domainName: ${ env:APPLICATION_URI }
-#    stage: ${self:provider.stage}
+#    stage: ${ env:STAGE }
 #    createRoute53Record: true
 #    certificateArn: ${ env:CERTIFICATE_ARN }
 
 provider:
   name: aws
   runtime: nodejs12.x
-  region: ${env:REGION}
+  region: ${ env:REGION }
   versionFunctions: false
 
   # ----- Managed policies to provide AWS service access
