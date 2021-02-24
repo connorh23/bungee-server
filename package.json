@@ -1,6 +1,6 @@
 {
   "name": "bungee-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bungee Server template project",
   "dependencies": {
     "bungee-lib": "2.0.1",
