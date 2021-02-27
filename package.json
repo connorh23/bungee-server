@@ -11,7 +11,9 @@
     "serverless-dotenv-plugin": "^3.7.2"
   },
   "devDependencies": {
-    "jest": "^26.6.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.20.0",
+    "jest": "^26.6.3",
     "serverless-domain-manager": "^5.1.0",
     "serverless-offline": "^6.8.0",
     "serverless-prune-plugin": "^1.4.3"
@@ -23,7 +25,9 @@
     "deploy:local": "serverless offline",
     "deploy:stage": "./scripts/staging/deploy.sh",
     "db:sync": "node scripts/db/sync_schema.js",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "lint": "./node_modules/.bin/eslint .",
+    "lint:fix": "./node_modules/.bin/eslint . --fix"
   },
   "author": "connor.hood234@gmail.com",
   "license": "ISC",
