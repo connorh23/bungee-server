@@ -15,10 +15,10 @@ class User extends BungeeModel {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
-  	email: {
-  		type: Sequelize.STRING,
-  		allowNull: false
-  	},
+		email: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
 	};
 
   static hooks = {
