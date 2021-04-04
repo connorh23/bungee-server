@@ -1,9 +1,7 @@
+require('dotenv').config();
 let Sequelize = require('sequelize');
 
-const environment = require('../environment');
-
 const AppModels = require('./app');
-
 
 module.exports = class ModelManager {
 
@@ -19,8 +17,8 @@ module.exports = class ModelManager {
 		return new Promise((success) => {
 			if (!this.models || !this.orm_client) {
 				this.models = {};
-				this.orm_client = new Sequelize(environment.db.default_db, environment.db.user, environment.db.password, {
-					host: environment.db.host,
+				this.orm_client = new Sequelize(process.env.BUNGEE_DEFAULT_DB, process.env.BUNGEE_DB_USER, process.env.BUNGEE_DB_PASSWORD, {
+					host: process.env.BUNGEE_DB_HOST,
 					dialect: 'mysql',
 					logging: true
 				});
@@ -44,10 +42,8 @@ module.exports = class ModelManager {
 	};
 
 	static init_foreign_keys = () => {
-
 		// Beer.hasMany(Category, { foreignKey: 'beer_id' });
 		// Category.belongsTo(Beer, { foreignKey: 'beer_id' });
-
 	};
 
 	static sync = async () => {
@@ -70,3 +66,5 @@ module.exports = class ModelManager {
 	}
 
 };
+
+
