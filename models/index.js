@@ -5,3 +5,7 @@ module.exports = {
 	AppModels,
 	ModelManager
 };
+
+ModelManager.init().catch(err => {
+	console.error("ERROR CONNECTING TO DB", err);
+});
