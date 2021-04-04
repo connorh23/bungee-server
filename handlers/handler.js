@@ -33,7 +33,7 @@ module.exports.hello = async request => {
 module.exports.meta_data = async request => {
 
 	const meta = {
-		models: Object.keys(AppModels)
+		models: Object.keys(ModelManager.models)
 	};
 
 	return responses.success({
