@@ -23,8 +23,7 @@ module.exports = class ModelManager {
 					logging: true
 				});
 				for (const [modelName, modelClass] of Object.entries(AppModels)) {
-					const pathName = this.__generatePathName(modelName);
-					this.models[pathName] = modelClass;
+					this.models[modelClass.getUrlPathString({ modelName })] = modelClass;
 					modelClass.init(this.orm_client);
 				}
 				success();
@@ -54,16 +53,7 @@ module.exports = class ModelManager {
 	};
 
 
-	static __generatePathName = modelName => {
-		let pathName = modelName.charAt(0).toLowerCase() + modelName.slice(1);
-		if (pathName.slice(-1) === "y") {
-			pathName = pathName.substring(0, pathName.length - 1);
-			pathName += "ies"
-		} else {
-			pathName += "s"
-		}
-		return pathName;
-	}
+
 
 };
 
