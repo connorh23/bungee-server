@@ -1,7 +1,6 @@
 'use strict';
 
 const {
-	AppModels,
 	ModelManager
 } = require('../models');
 
@@ -47,8 +46,6 @@ module.exports.meta_data = async request => {
 
 module.exports.rest = async request => {
 
-	await ModelManager.init();
-
 	let rest_method;
 
 	switch (request.httpMethod) {
@@ -70,16 +67,10 @@ module.exports.rest = async request => {
 		};
 	}
 
-	console.log(request);
-
 	const response = await async_executor.execute({
 		method: async () => { return rest_method(request); },
 		max_attempts: 1
 	});
-
-	console.log(response);
-
-	await ModelManager.teardown();
 
 	const s = responses.success({
 		statusCode: response.data? 200 : 500,
