@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const { BungeeModel } = require('../core/bungee_model');
+const { ormClient } = require('../core');
 
 class User extends BungeeModel {
 
@@ -25,9 +26,9 @@ class User extends BungeeModel {
 
   };
 
-  static init = (sequelize) => {
+  static init = async () => {
+  	// await this.linkClient();
   	super.init({
-  		sequelize,
   		modelName: this.MODEL_NAME,
   		spec: this.spec,
   		hooks: this.hooks
