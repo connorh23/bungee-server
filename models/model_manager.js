@@ -51,10 +51,6 @@ module.exports = class ModelManager {
 			await model.sync({ alter: true });
 		}
 	};
-
-
-
-
 };
 
 

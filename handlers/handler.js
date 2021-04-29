@@ -4,6 +4,9 @@ const {
 	ModelManager
 } = require('../models');
 
+/**
+ *
+ */
 const {
 	query,
 	retrieve,
@@ -12,11 +15,19 @@ const {
 	destroy
 } = require('../api/rest');
 
+/**
+ *
+ */
 const {
 	http: { responses },
 	util: { async_executor }
 } = require('bungee-lib');
 
+/**
+ *
+ * @param request
+ * @returns {Promise<*|{headers, statusCode, body }>}
+ */
 module.exports.hello = async request => {
 
 	return responses.success({
@@ -29,6 +40,11 @@ module.exports.hello = async request => {
 
 };
 
+/**
+ *
+ * @param request
+ * @returns {Promise<*|{headers, statusCode, body }>}
+ */
 module.exports.meta_data = async request => {
 
 	const meta = {
@@ -44,6 +60,11 @@ module.exports.meta_data = async request => {
 	});
 };
 
+/**
+ *
+ * @param request
+ * @returns {Promise<*|{headers, statusCode, body }>}
+ */
 module.exports.rest = async request => {
 
 	let rest_method;
@@ -68,12 +89,12 @@ module.exports.rest = async request => {
 	}
 
 	const response = await async_executor.execute({
-		method: async () => { return rest_method(request); },
+		method: async () => { return rest_method({ event: request }); },
 		max_attempts: 1
 	});
 
 	const s = responses.success({
-		statusCode: response.data? 200 : 500,
+		statusCode: response.data ? 200 : 500,
 		body: {
 			...response,
 		}
